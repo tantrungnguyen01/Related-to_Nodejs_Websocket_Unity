@@ -1,0 +1,19 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class buttonHistory : MonoBehaviour
+{
+    public GameObject TableHistory;
+
+    public void OpenTableHistory() {
+
+        if (TableHistory != null) {
+
+            bool isActive = TableHistory.activeSelf;
+            TableHistory.SetActive(!isActive);
+        }
+    }
+    
+    
+}
