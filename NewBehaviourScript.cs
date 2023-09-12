@@ -10,6 +10,9 @@ using UnityEngine.UI;
 using static NewBehaviourScript;
 using Unity.VisualScripting;
 using UnityEngine.U2D;
+using static UnityEditor.Experimental.AssetDatabaseExperimental.AssetDatabaseCounters;
+using System.Security.Cryptography;
+using UnityEngine.UIElements;
 
 
 public class NewBehaviourScript : MonoBehaviour 
@@ -29,15 +32,27 @@ public class NewBehaviourScript : MonoBehaviour
 
     public GameObject Blow;
     
+    //public GameObject point;
 
     public SpriteAtlas spriteAtlas;
-
+    
 
     public Animator animatorXiu;
     public Animator animatorTai;
 
+
+
+    public Text historyText;
+    private List<string> gameHistoryList = new List<string>();
+
+
     
 
+  
+   
+    public Sprite taiImage;
+    public Sprite xiuImage;
+    List<GameObject> resultImages = new List<GameObject>();
 
     IEnumerator ShowResultCoroutine()
     {
@@ -76,7 +91,10 @@ public class NewBehaviourScript : MonoBehaviour
     // Start is called before the first frame update
     async void Start()
     {
-   
+        GameObject imageObj = new GameObject("ResultImage");
+        SpriteRenderer spriteRenderer = imageObj.AddComponent<SpriteRenderer>();
+        spriteRenderer.sortingOrder = 1;
+
 
         dice.SetActive(false);
        
@@ -106,7 +124,9 @@ public class NewBehaviourScript : MonoBehaviour
 
         websocket.OnMessage += (bytes) =>
         {
-        
+
+            
+
             Debug.Log("OnMessage!");
             Debug.Log(bytes);
 
@@ -130,7 +150,7 @@ public class NewBehaviourScript : MonoBehaviour
 
 
                 SpriteRenderer diceImage = dice.GetComponent<SpriteRenderer>();
-
+               
                 if (roundData.counter == 10)
                 {
                     dice.SetActive(true);
@@ -140,6 +160,8 @@ public class NewBehaviourScript : MonoBehaviour
                     int diceResult = roundData.dice; 
                     Sprite diceSprite = spriteAtlas.GetSprite("dice-" + diceResult);
                     diceImage.sprite = diceSprite;
+
+                  
 
 
                     StartCoroutine(ShowResultCoroutine());
@@ -154,19 +176,114 @@ public class NewBehaviourScript : MonoBehaviour
                 }
 
 
+                
+
                 if (roundData.result == 0)
                 {
-
-
                     animatorXiu.SetTrigger("Animation_connect_Xiu");
+
+
+                    string resultText = roundData.result == 1 ? "Tai" : "Xiu";
+                    string gameInfo = $"Phien Gan Nhat: {roundData._id}    {resultText}({roundData.dice})";
+
+                    gameHistoryList.Insert(0, gameInfo);
+                    if (gameHistoryList.Count > 10)
+                    {
+                        gameHistoryList.RemoveAt(gameHistoryList.Count - 1);
+                    }
+                    historyText.text = string.Join("\n", gameHistoryList);
+
+                    GameObject imageObj = new GameObject("ResultImage");
+                    SpriteRenderer spriteRenderer = imageObj.AddComponent<SpriteRenderer>();
+                    spriteRenderer.sortingOrder = 1;
+                   
+                    imageObj.transform.position = new Vector3(-3.55f, -3.17f, 0);
+                    imageObj.transform.localScale = new Vector3(2.53f, 2.39f, 0);
+
+                    if (resultText == "Tai")
+                    {
+                        spriteRenderer.sprite = taiImage;
+                        
+                    }
+                    else if (resultText == "Xiu")
+                    {
+                        spriteRenderer.sprite = xiuImage;
+                        
+                    }
+
+                    foreach (GameObject resultImage in resultImages)
+                    {
+                        resultImage.transform.position += new Vector3(0.7f, 0, 0);
+                    }
+
+                    resultImages.Insert(0, imageObj);
+
+                    if (resultImages.Count > 12)
+                    {
+
+                        GameObject oldImageObj = resultImages[resultImages.Count - 1];
+                        resultImages.RemoveAt(resultImages.Count - 1);
+                        Destroy(oldImageObj);
+                    }
 
                 }
                 else if (roundData.result == 1)
                 {
                     animatorTai.SetTrigger("Animation_connect_Tai");
+
+
+                    string resultText = roundData.result == 1 ? "Tai" : "Xiu";
+                    string gameInfo = $"Phien Gan Nhat: {roundData._id}   {resultText}({roundData.dice})";
+
+                    gameHistoryList.Insert(0, gameInfo);
+                    if (gameHistoryList.Count > 10)
+                    {
+                        gameHistoryList.RemoveAt(gameHistoryList.Count - 1);
+                    }
+                    historyText.text = string.Join("\n", gameHistoryList);
+
+                    GameObject imageObj = new GameObject("ResultImage");
+                    SpriteRenderer spriteRenderer = imageObj.AddComponent<SpriteRenderer>();
+                    spriteRenderer.sortingOrder = 1;
+                    
+                    imageObj.transform.position = new Vector3(-3.55f, -3.17f, 0);
+                    imageObj.transform.localScale = new Vector3(2.53f,2.39f,0);
+                    if (resultText == "Tai")
+                    {
+                        spriteRenderer.sprite = taiImage;
+                        
+                    }
+                    else if (resultText == "Xiu")
+                    {
+                        spriteRenderer.sprite = xiuImage;
+                        
+                    }
+
+                    foreach (GameObject resultImage in resultImages)
+                    {
+                        resultImage.transform.position += new Vector3(0.7f, 0, 0);
+                    }
+
+                    resultImages.Insert(0, imageObj);
+
+                    if (resultImages.Count > 12)
+                    {
+                       
+                        GameObject oldImageObj = resultImages[resultImages.Count - 1];
+                        resultImages.RemoveAt(resultImages.Count - 1);
+                        Destroy(oldImageObj);
+                    }
+
+
                 }
+                
+
+
+
+
 
             }
+            
 
 
 
@@ -231,7 +348,7 @@ public class NewBehaviourScript : MonoBehaviour
        
     }
 
-
+    
 
 
 
