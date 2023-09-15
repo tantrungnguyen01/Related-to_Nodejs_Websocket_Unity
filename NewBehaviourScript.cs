@@ -46,10 +46,17 @@ public class NewBehaviourScript : MonoBehaviour
     private List<string> gameHistoryList = new List<string>();
 
 
-    
 
-  
-   
+    //public GameObject textPrefab;
+    public Text textconTableHistory;
+    //List<string> gameHistoryListt = new List<string>();
+
+
+
+
+
+
+
     public Sprite taiImage;
     public Sprite xiuImage;
     List<GameObject> resultImages = new List<GameObject>();
@@ -193,6 +200,17 @@ public class NewBehaviourScript : MonoBehaviour
                     }
                     historyText.text = string.Join("\n", gameHistoryList);
 
+
+
+                    string textconTableHistoryy = $"{roundData.dice}";
+                    textconTableHistory.text = textconTableHistoryy;
+                    //no font should no see
+                    GameObject newTextObject = new GameObject("TextHistory");
+                    Text newText = newTextObject.AddComponent<Text>();
+                    newText.text = textconTableHistoryy;
+                    newText.transform.SetParent(textconTableHistory.transform.parent);
+
+
                     GameObject imageObj = new GameObject("ResultImage");
                     SpriteRenderer spriteRenderer = imageObj.AddComponent<SpriteRenderer>();
                     spriteRenderer.sortingOrder = 1;
@@ -241,6 +259,21 @@ public class NewBehaviourScript : MonoBehaviour
                         gameHistoryList.RemoveAt(gameHistoryList.Count - 1);
                     }
                     historyText.text = string.Join("\n", gameHistoryList);
+                    
+
+
+
+                    string textconTableHistoryy = $"{roundData.dice}";
+                    textconTableHistory.text = textconTableHistoryy;
+                    //no font should no see
+                    GameObject newTextObject = new GameObject("TextHistory");
+                    Text newText = newTextObject.AddComponent<Text>();
+                    newText.text = textconTableHistoryy;
+                    newText.transform.SetParent(textconTableHistory.transform.parent);
+
+
+
+
 
                     GameObject imageObj = new GameObject("ResultImage");
                     SpriteRenderer spriteRenderer = imageObj.AddComponent<SpriteRenderer>();
