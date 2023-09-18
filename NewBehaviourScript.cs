@@ -3,16 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 using NativeWebSocket;
 using System.Threading.Tasks;
-using System;
+//using System;
 using System.Runtime.InteropServices.ComTypes;
 using TMPro;
 using UnityEngine.UI;
-using static NewBehaviourScript;
+//using static NewBehaviourScript;
 using Unity.VisualScripting;
 using UnityEngine.U2D;
 using static UnityEditor.Experimental.AssetDatabaseExperimental.AssetDatabaseCounters;
 using System.Security.Cryptography;
 using UnityEngine.UIElements;
+
+
 
 
 public class NewBehaviourScript : MonoBehaviour 
@@ -49,7 +51,10 @@ public class NewBehaviourScript : MonoBehaviour
 
     //public GameObject textPrefab;
     public Text textconTableHistory;
-    //List<string> gameHistoryListt = new List<string>();
+    float xOffset = 35.86f;
+    Vector3 lastTextPosition = new Vector3(-255.4f, -125.65f, 0);
+    //
+
 
 
 
@@ -98,9 +103,10 @@ public class NewBehaviourScript : MonoBehaviour
     // Start is called before the first frame update
     async void Start()
     {
-        GameObject imageObj = new GameObject("ResultImage");
-        SpriteRenderer spriteRenderer = imageObj.AddComponent<SpriteRenderer>();
-        spriteRenderer.sortingOrder = 1;
+
+        //GameObject imageObj = new GameObject("ResultImage");
+        //SpriteRenderer spriteRenderer = imageObj.AddComponent<SpriteRenderer>();
+        //spriteRenderer.sortingOrder = 1;
 
 
         dice.SetActive(false);
@@ -202,13 +208,27 @@ public class NewBehaviourScript : MonoBehaviour
 
 
 
+                    
+
                     string textconTableHistoryy = $"{roundData.dice}";
                     textconTableHistory.text = textconTableHistoryy;
-                    //no font should no see
+
                     GameObject newTextObject = new GameObject("TextHistory");
                     Text newText = newTextObject.AddComponent<Text>();
                     newText.text = textconTableHistoryy;
+                    newText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
                     newText.transform.SetParent(textconTableHistory.transform.parent);
+                    //lastTextPosition.x += xOffset;
+                    //newTextObject.transform.localPosition = lastTextPosition;
+                    //lastTextPosition = newTextObject.transform.localPosition;
+                    float[] yPositions = { -125.65f, -95.65f, -65.65f, -35.65f, -5.65f, 25.65f, 55.65f, 85.65f, 115.65f, 150.65f };
+                    int currentHeightIndex = int.Parse(textconTableHistoryy) - 1;
+                    Vector3 newPosition = new Vector3(lastTextPosition.x + xOffset, yPositions[currentHeightIndex], lastTextPosition.z);
+                    newTextObject.transform.localPosition = newPosition;
+                    lastTextPosition = newPosition;
+
+
+
 
 
                     GameObject imageObj = new GameObject("ResultImage");
@@ -259,18 +279,26 @@ public class NewBehaviourScript : MonoBehaviour
                         gameHistoryList.RemoveAt(gameHistoryList.Count - 1);
                     }
                     historyText.text = string.Join("\n", gameHistoryList);
+
+
                     
-
-
 
                     string textconTableHistoryy = $"{roundData.dice}";
                     textconTableHistory.text = textconTableHistoryy;
-                    //no font should no see
+                    
                     GameObject newTextObject = new GameObject("TextHistory");
                     Text newText = newTextObject.AddComponent<Text>();
                     newText.text = textconTableHistoryy;
+                    newText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
                     newText.transform.SetParent(textconTableHistory.transform.parent);
-
+                    //lastTextPosition.x += xOffset;
+                    //newTextObject.transform.localPosition = lastTextPosition;
+                    //lastTextPosition = newTextObject.transform.localPosition;
+                    float[] yPositions = { -125.65f, -95.65f, -65.65f, -35.65f, -5.65f, 25.65f, 55.65f, 85.65f, 115.65f, 150.65f };
+                    int currentHeightIndex = int.Parse(textconTableHistoryy) - 1;
+                    Vector3 newPosition = new Vector3(lastTextPosition.x + xOffset, yPositions[currentHeightIndex], lastTextPosition.z);
+                    newTextObject.transform.localPosition = newPosition;
+                    lastTextPosition = newPosition;
 
 
 
@@ -331,8 +359,9 @@ public class NewBehaviourScript : MonoBehaviour
         await websocket.Connect();
         
        
-
+       
     }
+
     
 
     // Update is called once per frame
@@ -342,8 +371,6 @@ public class NewBehaviourScript : MonoBehaviour
                     websocket.DispatchMessageQueue();
 
             #endif
-       
-
     }
     //async void SendWebSocketMessage()
     //{
